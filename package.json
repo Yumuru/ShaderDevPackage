@@ -1,11 +1,10 @@
 {
-  "name": "YumuruShaderDev.package",
+  "name": "yumurushaderdev",
   "displayName": "YumuruShaderDev",
   "version": "0.1.0",
   "unity": "2018.4",
   "description": "YumuruShaderDev",
   "keywords": [ "ShaderDevAsset" ],
   "dependencies": {
-    "link.xmaho.shader": "https://github.com/forno/XmahoShader.git"
   }
 }

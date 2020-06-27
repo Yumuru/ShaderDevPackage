@@ -1,18 +1,24 @@
-﻿Shader "Template/Basic" {
+﻿Shader "Skybox/Black" {
 	Properties {
 	}
 	SubShader {
-		Tags { "RenderType"="Opaque" }
+		Tags {
+			"RenderType"="Background"
+			"Queue"="Background"
+			"PreviewType"="Skybox"
+		}
 		LOD 100
+
+		ZWrite Off
+		Cull Off
 
 		Pass {
 			CGPROGRAM
-			#pragma target 5.0
+			#pragma target 4.0
 			#pragma vertex VS
 			#pragma fragment FS
 			
 			#include "UnityCG.cginc"
-			#include "Packages/yumurushaderdev/CGINC/Vector.cginc"
 
 			struct VS_IN {
 				float4 vertex : POSITION;
@@ -35,9 +41,9 @@
 				o.uv = v.uv;
 				return o;
 			}
-
+		
 			float4 FS(VS_OUT i) : SV_Target {
-				return float4(i.uv, 0, 1);
+				return 0;
 			}
 			ENDCG
 		}
