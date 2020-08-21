@@ -1,7 +1,6 @@
 {
-    "name": "NewAssembly",
+    "name": "YumuruShaderDev",
     "references": [],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -10,5 +9,7 @@
     "autoReferenced": true,
     "defineConstraints": [
         "UNITY_EDITOR"
-    ]
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
