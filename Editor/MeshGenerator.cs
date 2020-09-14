@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 
 public class MeshGenerator : EditorWindow {
-	[MenuItem("Generator/Quad")]
+	[MenuItem("Editor/QuadGenerator")]
 	static void Open() {
 		GetWindow<MeshGenerator>("Generator");
 	}
