@@ -12,51 +12,44 @@ public class MeshGenerator : EditorWindow {
 	}
 
 	//string path_name;
-	int resolution = 16;
 
 	Mesh referenceMesh;
 	int N;
 
 	void OnGUI() {
 		//path_name = EditorGUILayout.TextField("Path_Name", path_name);
-		resolution = EditorGUILayout.IntField("Resolution", resolution);
-		if (GUILayout.Button("Generate Quad")) {
-			GenerateQuad(); }
+		if (GUILayout.Button("Generate Triangle Polygons")) {
+			GenerateTrianglePolygons(); }
 		N = EditorGUILayout.IntField("Num", N);
 		referenceMesh = (Mesh) EditorGUILayout.ObjectField("Reference Mesh", referenceMesh, typeof(Mesh), false);
 		if (GUILayout.Button("Mesh N Copy")) {
 			MeshNCopy(); }
 	}
 
-	void GenerateQuad() {
-		var mesh = new Mesh();
-		var delta = 1f / resolution;
-		var vertices = new List<Vector3>();
-		var triangles = new List<int>();
-		var uvs = new List<Vector2>();
-		for (int j = 0; j <= resolution; j++) {
-			var y = (float) j / resolution;
-			for (int i = 0; i <= resolution; i++) {
-				var x = (float) i / resolution;
-				vertices.Add(new Vector3(x-0.5f, y-0.5f, 0));
-				uvs.Add(new Vector2(x, y));
-				if (j == resolution || i == resolution) continue;
-				var index = j * (resolution+1) + i;
-				triangles.Add(index);
-				triangles.Add(index+resolution+1);
-				triangles.Add(index+1+resolution+1);
-				triangles.Add(index);
-				triangles.Add(index+1+resolution+1);
-				triangles.Add(index+1);
-			}
-		}
+  void GenerateTrianglePolygons() {
+    var vertices = new List<Vector3>();
+    var uv = new List<Vector3>();
+    var triangles = new List<int>();
+    for (int i = 0; i < N; i++) {
+      vertices.Add(new Vector3(0, 0, 0));
+      vertices.Add(new Vector3(0, 0, 1));
+      vertices.Add(new Vector3(1, 0, 0));
+      triangles.Add(3 * i + 0);
+      triangles.Add(3 * i + 1);
+      triangles.Add(3 * i + 2);
+      uv.Add(new Vector3(0, 0, i));
+      uv.Add(new Vector3(0, 0, i));
+      uv.Add(new Vector3(0, 0, i));
+    }
+    var mesh = new Mesh();
+    mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 		mesh.vertices = vertices.ToArray();
+		mesh.SetUVs(0, uv);
 		mesh.triangles = triangles.ToArray();
-		mesh.uv = uvs.ToArray();
-    string path = string.Format("Assets/{0}x{0}.asset", resolution.ToString());
-		AssetDatabase.CreateAsset(mesh, path);
-		AssetDatabase.SaveAssets();
-	}
+    string path = string.Format("Assets/{0}Polygons.asset", N);
+    AssetDatabase.CreateAsset(mesh, path);
+    AssetDatabase.SaveAssets();
+  }
 
 	void MeshNCopy() {
 		var vertices = new List<Vector3>();
