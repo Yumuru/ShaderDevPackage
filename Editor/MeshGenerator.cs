@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 
 public class MeshGenerator : EditorWindow {
-	[MenuItem("Editor/QuadGenerator")]
+	[MenuItem("Editor/MeshGenerator")]
 	static void Open() {
 		GetWindow<MeshGenerator>("Generator");
 	}
@@ -18,9 +18,9 @@ public class MeshGenerator : EditorWindow {
 
 	void OnGUI() {
 		//path_name = EditorGUILayout.TextField("Path_Name", path_name);
+		N = EditorGUILayout.IntField("Num", N);
 		if (GUILayout.Button("Generate Triangle Polygons")) {
 			GenerateTrianglePolygons(); }
-		N = EditorGUILayout.IntField("Num", N);
 		referenceMesh = (Mesh) EditorGUILayout.ObjectField("Reference Mesh", referenceMesh, typeof(Mesh), false);
 		if (GUILayout.Button("Mesh N Copy")) {
 			MeshNCopy(); }
