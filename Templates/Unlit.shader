@@ -1,4 +1,4 @@
-﻿Shader "Template/Basic" {
+﻿Shader "Template/Unlit" {
 	Properties {
 	}
 	SubShader {
@@ -27,25 +27,22 @@
 			// mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_MV, float4(p,1)) + float4(v,0,0))
 
 			#define instanceN 1
-			#define GSCopyN 1
 
 			[instance(instanceN)]
-			[maxvertexcount(3 * GSCopyN)]
+			[maxvertexcount(3)]
 			void GS(triangle appdata_full i[3], inout TriangleStream<GS_OUT> stream, uint gsid : SV_GSInstanceID) {
-				for (int rep = 0; rep < GSCopyN; rep++) {
-					for (int j = 0; j < 3; j++) {
-						appdata_full v = i[j];
-            GS_OUT o;
-						uint id = gsid + instanceN * rep + instanceN * GSCopyN * v.texcoord.z;
-						bool isShow = true;
-						v.vertex.z += id;
-            o.texcoord = v.texcoord;
-						o.texcoord3.xyz = v.vertex.xyz;
-						o.vertex = lerp(0, UnityObjectToClipPos(v.vertex), isShow);
-						stream.Append(o);
-					}
-					stream.RestartStrip();
+				for (int j = 0; j < 3; j++) {
+					appdata_full v = i[j];
+					GS_OUT o = (GS_OUT) 0;
+					uint id = gsid + instanceN * v.texcoord.z;
+					bool isShow = true;
+					v.vertex.z += id;
+					o.texcoord = v.texcoord;
+					o.texcoord3.xyz = v.vertex.xyz;
+					o.vertex = lerp(0, UnityObjectToClipPos(v.vertex), isShow);
+					stream.Append(o);
 				}
+				stream.RestartStrip();
 			}
 
 			float4 FS(appdata_full i) : SV_Target {
