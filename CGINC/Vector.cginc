@@ -1,10 +1,7 @@
 ﻿#ifndef Vector
 #define Vector
 
-#define PI UNITY_PI
-#define Deg2Rad ((PI * 2.0) / 360.0)
-
-float3x3 rotate(float angle, float3 axis) {
+float3x3 rotate3(float angle, float3 axis) {
   float3 a = normalize(axis);
   float s = sin(angle);
   float c = cos(angle);
@@ -15,15 +12,6 @@ float3x3 rotate(float angle, float3 axis) {
     a.x * a.z * r + a.y * s, a.y * a.z * r - a.x * s, a.z * a.z  * r + c
   );
   return m;
-}
-
-float3x3 rotateDeg(float angle, float3 axis) { return rotate(Deg2Rad * angle, axis); }
-
-#define rotateFromRate(maxAngle, rate, axis) \
-  rotate(Deg2Rad * maxAngle * rate, axis)
-
-float3x3 rotate360(float rate, float3 axis) {
-  return rotateFromRate(360, rate, axis);
 }
 
 float3x3 lookAt(float3 dir, float3 up) {
