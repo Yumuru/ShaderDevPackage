@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: SceneSetterResource
   m_EditorClassIdentifier: 
   skybox_black: {fileID: 2100000, guid: ac9e1753aa7114b478316708628f8375, type: 2}
+  skybox_white: {fileID: 2100000, guid: dcb6e108fcf232945b9677e1545d1849, type: 2}

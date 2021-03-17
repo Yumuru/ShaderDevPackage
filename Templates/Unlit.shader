@@ -13,7 +13,6 @@
 			#pragma fragment FS
 			
 			#include "UnityCG.cginc"
-			#include "Packages/yumurushaderdev/CGINC/Vector.cginc"
 
       struct GS_OUT {
         float4 vertex : SV_Position;
@@ -45,7 +44,7 @@
 				stream.RestartStrip();
 			}
 
-			float4 FS(appdata_full i) : SV_Target {
+			float4 FS(GS_OUT i) : SV_Target {
 				float3 pos = i.texcoord3.xyz;
 				float2 uv = i.texcoord.xy;
 				return float4(uv, 0, 1);

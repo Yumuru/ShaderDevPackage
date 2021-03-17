@@ -16,6 +16,11 @@ public class SceneSetter : EditorWindow {
       RenderSettings.skybox = sceneSetterResource.skybox_black;
       Resources.UnloadAsset(sceneSetterResource);
     }
+    if (GUILayout.Button("Set White Skybox")) {
+      var sceneSetterResource = (SceneSetterResource) Resources.Load("SceneSetterResource", typeof(SceneSetterResource));
+      RenderSettings.skybox = sceneSetterResource.skybox_white;
+      Resources.UnloadAsset(sceneSetterResource);
+    }
   }
 }
 #endif
