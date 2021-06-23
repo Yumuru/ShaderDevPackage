@@ -15,11 +15,15 @@ Memory newMemory(uint resolution, sampler2D memory) {
   return m;
 }
 
+uint memid(uint resolution, float2 uv) {
+  return floor(uv.x * resolution) + floor(resolution * uv.y) * resolution;
+}
+
 uint memid(inout Memory m, float2 uv) {
-  return floor(uv.x * m.resolution) + floor(m.resolution * uv.y) * m.resolution;
+  return memid(m.resolution, uv);
 }
 float2 muv(inout Memory m, uint id) {
-  return float2(id % m.resolution + 0.5, id / m.resolution + 0.5) / m.resolution;
+  return (float2(id % m.resolution, id / m.resolution) + .5) / m.resolution;
 }
 float4 mem(inout Memory m, uint id) {
   float2 uv = muv(m, id);
@@ -59,15 +63,15 @@ uint newMVal(inout uint id, uint size) {
 }
 
 
-float4 tom(bool v) {
-  return (uint(v));
-}
 float4 tom(uint v) {
   return float4(
     ((v >> 24) & 0xff) / 255.,
     ((v >> 16) & 0xff) / 255.,
     ((v >>  8) & 0xff) / 255.,
     ((v >>  0) & 0xff) / 255.);
+}
+float4 tom(bool v) {
+  return tom(uint(v));
 }
 float4 tom(int v) {
   return tom(asuint(v));

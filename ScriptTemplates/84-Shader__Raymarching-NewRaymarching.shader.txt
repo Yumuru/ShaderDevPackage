@@ -1,0 +1,89 @@
+Shader "Custom/Raymarching/#SCRIPTNAME#" {
+	Properties {
+		_MeshSize ("Mesh Size", Float) = 3
+	}
+	SubShader {
+		Tags { "RenderType"="Opaque" }
+		Cull Front
+		LOD 100
+
+		Pass {
+			CGPROGRAM
+			#pragma target 5.0
+			#pragma vertex VS
+			#pragma fragment FS
+			
+			#include "UnityCG.cginc"
+
+      struct VS_OUT {
+        float4 vertex : SV_Position;
+        float4 texcoord : TEXCOORD0;
+				float3 pos : TEXCOORD1;
+      };
+
+			float _MeshSize;
+
+			VS_OUT VS(appdata_full v) {
+				VS_OUT o = (VS_OUT) 0;
+				v.vertex.xyz *= _MeshSize;
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.texcoord = v.texcoord;
+				o.pos = v.vertex.xyz;
+				return o;
+			}
+
+			// Reference
+			// mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_MV, float4(p,1)) + float4(v,0,0))
+
+      float random(float2 st) {
+        return frac(sin(dot(st.xy, float2(12.9898, 78.233))) * 
+                          43758.5453123);
+			}
+
+      float mod(float x, float y) {
+        return x - y * floor(x/y);
+      }
+
+			#define rot(a) float2x2(cos(a), sin(a), -sin(a), cos(a))
+
+			#define PI acos(-1.)
+
+			float map(float3 p) {
+				return -.5 + length(p);
+			}
+
+			float3 getNormal(float3 p) {
+				const float epsilon = 1e-4;
+				const float2 k = float2(1, -1);
+				return normalize(k.xyy * map(mad(k.xyy, epsilon, p)) +
+												 k.yyx * map(mad(k.yyx, epsilon, p)) +
+												 k.yxy * map(mad(k.yxy, epsilon, p)) +
+												 k.xxx * map(mad(k.xxx, epsilon, p)));
+			}
+
+			float4 FS(VS_OUT input) : SV_Target {
+				float3 camP = mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1)).xyz;
+				float3 rayDir = normalize(input.pos - camP);
+				float3 p = camP;
+				float d = 1.;
+				uint i;
+				float4 color = 0;
+				float3 lightDir = normalize(float3(-.3 ,-1. ,.2));
+				for (i = 0; i < 16 && d > 0.001; i++) {
+					d = map(p);
+					p += rayDir * d;
+				}
+				if (d < 0.001) {
+					float3 normal = getNormal(p);
+					float bright = max(.04, dot(-lightDir, normal));
+					float3 col = bright;
+					color = float4(col, 1.);
+					return color;
+				}
+				discard;
+				return 0;
+			}
+			ENDCG
+		}
+	}
+}

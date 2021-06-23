@@ -1,4 +1,4 @@
-﻿Shader "Template/Unlit" {
+Shader "Custom/UnlitMeshCopy/#SCRIPTNAME#" {
 	Properties {
 	}
 	SubShader {
@@ -17,13 +17,20 @@
       struct GS_OUT {
         float4 vertex : SV_Position;
         float4 texcoord : TEXCOORD0;
-        float4 texcoord3 : TEXCOORD3;
       };
 
 			appdata_full VS(appdata_full v) { return v; }
 
-			// Reference
-			// mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_MV, float4(p,1)) + float4(v,0,0))
+      float random(float2 st) {
+        return frac(sin(dot(st.xy, float2(12.9898, 78.233))) * 
+                          43758.5453123);
+			}
+
+      float mod(float x, float y) {
+        return x - y * floor(x/y);
+      }
+
+			#define rot(a) float2x2(cos(a), sin(a), -sin(a), cos(a))
 
 			#define instanceN 1
 
@@ -34,20 +41,17 @@
 					appdata_full v = i[j];
 					GS_OUT o = (GS_OUT) 0;
 					uint id = gsid + instanceN * v.texcoord.z;
-					bool isShow = true;
 					v.vertex.z += id;
 					o.texcoord = v.texcoord;
-					o.texcoord3.xyz = v.vertex.xyz;
-					o.vertex = lerp(0, UnityObjectToClipPos(v.vertex), isShow);
+					o.vertex = UnityObjectToClipPos(v.vertex);
 					stream.Append(o);
 				}
 				stream.RestartStrip();
 			}
 
-			float4 FS(GS_OUT i) : SV_Target {
-				float3 pos = i.texcoord3.xyz;
-				float2 uv = i.texcoord.xy;
-				return float4(uv, 0, 1);
+			float4 FS(GS_OUT input) : SV_Target {
+				float2 uv = input.texcoord.xy;
+				return float4(uv, 0., 1);
 			}
 			ENDCG
 		}
